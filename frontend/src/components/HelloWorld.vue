@@ -10,7 +10,7 @@
         />
       </v-col>
 
-      <v-col class="mb-4">
+<v-col class="mb-4">
         <h1 class="display-2 font-weight-bold mb-3">
           {{ msg }}
         </h1>
@@ -107,11 +107,11 @@ export default class HelloWorld extends Vue {
     },
     {
       text: 'github',
-      href: 'https://github.com/vuetifyjs/vuetify',
+      href: 'https://github.com/vuetifyjs/vuetify'
     },
     {
       text: 'awesome-vuetify',
-      href: 'https://github.com/vuetifyjs/awesome-vuetify',
+      href: 'https://github.com/vuetifyjs/awesome-vuetify'
     },
   ];
 
