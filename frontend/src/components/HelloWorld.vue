@@ -10,7 +10,7 @@
         />
       </v-col>
 
-<v-col class="mb-4">
+      <v-col class="mb-4">
         <h1 class="display-2 font-weight-bold mb-3">
           {{ msg }}
         </h1>
@@ -67,7 +67,7 @@
             target="_blank"
           >
             {{ link.text }}
-</a>
+          </a>
         </v-row>
       </v-col>
 
@@ -103,15 +103,15 @@ export default class HelloWorld extends Vue {
   private ecosystem = [
     {
       text: 'vuetify-loader',
-      href: 'https://github.com/vuetifyjs/vuetify-loader'
+      href: 'https://github.com/vuetifyjs/vuetify-loader',
     },
     {
       text: 'github',
-      href: 'https://github.com/vuetifyjs/vuetify'
+      href: 'https://github.com/vuetifyjs/vuetify',
     },
     {
       text: 'awesome-vuetify',
-      href: 'https://github.com/vuetifyjs/awesome-vuetify'
+      href: 'https://github.com/vuetifyjs/awesome-vuetify',
     },
   ];
 
