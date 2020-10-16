@@ -2,15 +2,28 @@ name: ReviewDog
 on: [pull_request]
 
 jobs:
-  eslint:
-    name: runner / eslint
+  eslint-vue:
+    name: runner / eslint - Vue
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
       - name: eslint
-        working-directory: ./frontend 
         uses: reviewdog/action-eslint@v1
         with: 
           github_token: ${{ secrets.github_token }}
           reporter: github-pr-review
           eslint_flags: 'src/**/*.{js,ts,vue}'
+          workdir: './frontend' 
+
+  eslint-device:
+    name: runner / eslint - Device
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: eslint
+        uses: reviewdog/action-eslint@v1
+        with: 
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review
+          eslint_flags: 'src/**/*.{js,ts}'
+          workdir: './device' 
