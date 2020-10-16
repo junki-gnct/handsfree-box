@@ -67,7 +67,7 @@
             target="_blank"
           >
             {{ link.text }}
-          </a>
+</a>
         </v-row>
       </v-col>
 
@@ -103,7 +103,7 @@ export default class HelloWorld extends Vue {
   private ecosystem = [
     {
       text: 'vuetify-loader',
-      href: 'https://github.com/vuetifyjs/vuetify-loader',
+      href: 'https://github.com/vuetifyjs/vuetify-loader'
     },
     {
       text: 'github',
