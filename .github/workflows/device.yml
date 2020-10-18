@@ -19,7 +19,7 @@ jobs:
         uses: finnp/create-file-action@1.0.0
         env:
           FILE_NAME: './device/src/miscs/serviceAccountCredentials.json'
-          FILE_DATA: 'ewogICAgInR5cGUiOiAic2VydmljZV9hY2NvdW50IiwKICAgICJwcm9qZWN0X2lkIjogIiIsCiAgICAicHJpdmF0ZV9rZXlfaWQiOiAiIiwKICAgICJwcml2YXRlX2tleSI6ICIiLAogICAgImNsaWVudF9lbWFpbCI6ICIiLAogICAgImNsaWVudF9pZCI6ICIiLAogICAgImF1dGhfdXJpIjogIiIsCiAgICAidG9rZW5fdXJpIjogIiIsCiAgICAiYXV0aF9wcm92aWRlcl94NTA5X2NlcnRfdXJsIjogIiIsCiAgICAiY2xpZW50X3g1MDlfY2VydF91cmwiOiAiIgp9'
+          FILE_DATA: '{"type":"service_account","project_id":"","private_key_id":"","private_key":"","client_email":"","client_id":"","auth_uri":"","token_uri":"","auth_provider_x509_cert_url":"","client_x509_cert_url":""}'
       - name: yarn install, lint
         run: |
           yarn install
