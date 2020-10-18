@@ -46,6 +46,7 @@
     "*.{js,ts,json}": "prettier --write"
   },
   "dependencies": {
-    "firebase-admin": "^9.2.0"
+    "firebase-admin": "^9.2.0",
+    "getmac": "^5.16.0"
   }
 }
