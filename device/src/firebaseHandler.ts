@@ -1,8 +1,6 @@
-import { admin } from 'firebase-admin/lib/database';
-
 export function checkOnlineState(
   obj: Record<string, unknown>,
-  ref: admin.database.Reference,
+  ref: firebase.database.Reference,
 ): void {
   if (!(obj.isOnline as boolean)) {
     void ref.update({
