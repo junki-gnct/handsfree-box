@@ -20,6 +20,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
+      - name: Create File
+        uses: finnp/create-file-action@1.0.0
+        env:
+          FILE_NAME: './device/src/miscs/serviceAccountCredentials.json'
+          FILE_DATA: 'ewogICAgInR5cGUiOiAic2VydmljZV9hY2NvdW50IiwKICAgICJwcm9qZWN0X2lkIjogIiIsCiAgICAicHJpdmF0ZV9rZXlfaWQiOiAiIiwKICAgICJwcml2YXRlX2tleSI6ICIiLAogICAgImNsaWVudF9lbWFpbCI6ICIiLAogICAgImNsaWVudF9pZCI6ICIiLAogICAgImF1dGhfdXJpIjogIiIsCiAgICAidG9rZW5fdXJpIjogIiIsCiAgICAiYXV0aF9wcm92aWRlcl94NTA5X2NlcnRfdXJsIjogIiIsCiAgICAiY2xpZW50X3g1MDlfY2VydF91cmwiOiAiIgp9'
       - name: eslint
         uses: reviewdog/action-eslint@v1
         with: 
