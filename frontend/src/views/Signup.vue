@@ -44,7 +44,6 @@ export default class Signup extends Vue {
         if (user && user.user) {
           user.user.getIdToken().then(idToken => {
             localStorage.setItem('jwt', idToken.toString());
-            console.log('Logged in.');
             this.$router.push({ path: '/' });
           });
         }

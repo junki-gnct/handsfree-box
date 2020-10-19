@@ -11,6 +11,7 @@ const routes: Array<RouteConfig> = [
     path: '/',
     name: 'Home',
     component: Home,
+    props: { GCMKey: process.env.VUE_APP_MIX_FIREBASE_APP_VAPPI_KEY },
   },
   {
     path: '/login',

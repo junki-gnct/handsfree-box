@@ -11,21 +11,14 @@
   </v-app>
 </template>
 
-<script>
+<script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
 import Header from './components/Header.vue';
-import firebase from 'firebase';
 
 @Component({
   components: {
     Header,
   },
 })
-export default class App extends Vue {
-  created() {
-    const messaging = firebase.messaging();
-    console.log(process.env.VUE_APP_MIX_FIREBASE_APP_VAPPI_KEY);
-    messaging.usePublicVapidKey(process.env.VUE_APP_MIX_FIREBASE_APP_VAPPI_KEY);
-  }
-}
+export default class App extends Vue {}
 </script>
