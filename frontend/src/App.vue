@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <Header />
+    <Header :hidden="hidden" />
     <v-content>
       <v-container fluid fill-height>
         <v-layout justify-center align-center>
@@ -12,13 +12,22 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
+import { Vue, Component, Watch, Prop } from 'vue-property-decorator';
 import Header from './components/Header.vue';
+import * as SessionManager from './SessionManager';
 
 @Component({
   components: {
     Header,
   },
 })
-export default class App extends Vue {}
+export default class App extends Vue {
+  @Prop({ default: false })
+  hidden!: boolean;
+
+  @Watch('$route')
+  route() {
+    this.hidden = !SessionManager.isLoggedIn();
+  }
+}
 </script>
