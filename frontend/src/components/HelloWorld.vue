@@ -32,6 +32,7 @@
         <v-row justify="center">
           <router-link to="/" class="subheading mx-3">Home</router-link>
           <router-link to="/about" class="subheading mx-3">About</router-link>
+          <a href="#" class="subheading mx-3" @click="logoutClicked">Logout</a>
         </v-row>
       </v-col>
 
@@ -94,11 +95,20 @@
 
 <script lang="ts">
 import { Vue, Prop, Component } from 'vue-property-decorator';
+import * as SessionManager from '../SessionManager';
 
 @Component
 export default class HelloWorld extends Vue {
   @Prop({ default: '' })
   msg!: string;
+
+  logoutClicked() {
+    const res = confirm('ログアウトしますか？');
+    if (res) {
+      SessionManager.logout();
+      this.$router.push({ path: '/login' });
+    }
+  }
 
   private ecosystem = [
     {

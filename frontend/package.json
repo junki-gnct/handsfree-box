@@ -10,7 +10,10 @@
     "eslint": "eslint 'src/**/*.{js,ts,vue}'"
   },
   "dependencies": {
+    "@types/node": "^14.11.10",
     "core-js": "^3.6.5",
+    "firebase": "^7.24.0",
+    "node": "^14.14.0",
     "vue": "^2.6.11",
     "vue-class-component": "^7.2.3",
     "vue-property-decorator": "^8.4.2",

@@ -17,3 +17,18 @@
     </v-row>
   </div>
 </template>
+
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
+import * as SessionManager from '../SessionManager';
+
+@Component
+export default class About extends Vue {
+  mounted() {
+    if (!SessionManager.isLoggedIn()) {
+      this.$router.push({ path: '/login' });
+      return;
+    }
+  }
+}
+</script>
