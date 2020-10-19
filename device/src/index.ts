@@ -25,6 +25,8 @@ const config = {
 };
 firebase.initializeApp(config);
 
+let gcm_token: string | null = null;
+
 // TODO: Check user credentials.
 
 void firebase.auth().signInWithEmailAndPassword('test@example.com', 'testtest');
@@ -35,6 +37,13 @@ firebase.auth().onAuthStateChanged((currentUser) => {
     let isOpen = false;
 
     const db = firebase.database();
+    const ref_token = db.ref(`/${currentUser.uid}/token`);
+    void ref_token.on('value', (snapshot) => {
+      if (snapshot.val() != null) {
+        gcm_token = snapshot.val() as string;
+      }
+    });
+
     const ref = db.ref(`/${currentUser.uid}/${device_id}/`);
 
     void ref.on('value', (snapshot) => {
@@ -58,7 +67,7 @@ firebase.auth().onAuthStateChanged((currentUser) => {
 
         if (state != isOpen) {
           isOpen = state;
-          firebaseHandler.onBoxStateUpdated(state);
+          firebaseHandler.onBoxStateUpdated(state, gcm_token as string);
         }
       }
     });

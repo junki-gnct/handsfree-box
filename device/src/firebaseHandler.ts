@@ -9,6 +9,7 @@ export function checkOnlineState(
   }
 }
 
-export function onBoxStateUpdated(state: boolean): void {
+export function onBoxStateUpdated(state: boolean, gcm_token: string): void {
   console.log(state);
+  console.log(gcm_token);
 }
