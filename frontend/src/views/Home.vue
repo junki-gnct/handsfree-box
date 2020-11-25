@@ -19,7 +19,12 @@ export default class Home extends Vue {
   @Prop({ default: '' })
   GCMKey!: string;
 
-  created() {
+  mounted() {
+    if (!SessionManager.isLoggedIn()) {
+      this.$router.push({ path: '/login' });
+      return;
+    }
+
     const messaging = firebase.messaging();
     messaging.usePublicVapidKey(this.GCMKey);
 
@@ -46,13 +51,6 @@ export default class Home extends Vue {
       .catch(err => {
         console.log(`Error occured. ${err}`);
       });
-  }
-
-  mounted() {
-    if (!SessionManager.isLoggedIn()) {
-      this.$router.push({ path: '/login' });
-      return;
-    }
   }
 }
 </script>
