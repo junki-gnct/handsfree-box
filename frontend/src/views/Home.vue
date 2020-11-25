@@ -26,6 +26,7 @@ export default class Home extends Vue {
     }
 
     const messaging = firebase.messaging();
+    console.log(this.GCMKey);
     messaging.usePublicVapidKey(this.GCMKey);
 
     Notification.requestPermission()
