@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Router from 'next/router';
 import { auth } from '../utils/Firebase';
 
-import Header from '../components/Header';
+import GuestHeader from '../components/organisms/GuestHeader';
 
 const LoginPage: React.FunctionComponent = () => {
   const [email, setEmail] = useState<string>('');
@@ -27,7 +27,7 @@ const LoginPage: React.FunctionComponent = () => {
 
   return (
     <>
-      <Header />
+      <GuestHeader />
       <div className="wrapper">
         <form className="auth" onSubmit={login}>
           <div>

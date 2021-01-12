@@ -1,0 +1,22 @@
+.header {
+    height: 48px;
+    width: 100%;
+    background-color: rgb(0, 0, 33);
+
+    &__menu {
+        &__button {
+            height: 48px;
+        }
+
+        &__icon {
+            color: whitesmoke;
+            height: 36px!important;
+        }
+    }
+}
+
+.drawer {
+    &__list {
+        width: 250px;
+    }
+}

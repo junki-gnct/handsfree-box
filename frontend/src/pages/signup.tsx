@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react';
 import Router from 'next/router';
 import Link from 'next/link';
 
-import Header from '../components/Header';
+import GuestHeader from '../components/organisms/GuestHeader';
 
 import { auth } from '../utils/Firebase';
 
 const SignUpPage: React.FunctionComponent = () => {
+  const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
@@ -21,7 +22,10 @@ const SignUpPage: React.FunctionComponent = () => {
   ): Promise<void> => {
     e.preventDefault();
     try {
-      await auth.createUserWithEmailAndPassword(email, password);
+      const user = await auth.createUserWithEmailAndPassword(email, password);
+      await user.user?.updateProfile({
+        displayName: name,
+      });
       Router.push('/');
     } catch (err) {
       alert(err.message);
@@ -30,9 +34,20 @@ const SignUpPage: React.FunctionComponent = () => {
 
   return (
     <>
-      <Header />
+      <GuestHeader />
       <div className="wrapper">
         <form className="auth" onSubmit={createUser}>
+          <div>
+            <label htmlFor="name" className="auth-label">
+              Name:{' '}
+            </label>
+            <input
+              id="name"
+              className="auth-input"
+              type="name"
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
           <div>
             <label htmlFor="email" className="auth-label">
               Email:{' '}

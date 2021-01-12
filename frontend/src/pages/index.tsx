@@ -3,7 +3,7 @@ import Router from 'next/router';
 
 import { auth } from '../utils/Firebase';
 
-import Header from '../components/Header';
+import UserHeader from '../components/organisms/UserHeader';
 
 const IndexPage: React.FunctionComponent = () => {
   const [currentUser, setCurrentUser] = useState<null | unknown>(null);
@@ -25,7 +25,7 @@ const IndexPage: React.FunctionComponent = () => {
 
   return (
     <div>
-      <Header />
+      <UserHeader />
       <pre>{JSON.stringify(currentUser, null, 4)}</pre>
       <button onClick={logout}>Logout</button>
     </div>
