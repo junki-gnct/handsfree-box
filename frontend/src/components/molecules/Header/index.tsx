@@ -47,16 +47,16 @@ const Header: React.FunctionComponent<HeaderProps> = ({ drawerContents }) => {
 };
 
 export const ParseLinks = (list: HeaderLink[]): JSX.Element => (
-  <>
+  <div key={list[0].label + list[0].link}>
     {list.map((item, index) => (
-      <Link href={item.link} key={index}>
+      <Link href={item.link} key={item.label + '-' + index}>
         <MenuItem button>
           <ListItemIcon>{item.icon}</ListItemIcon>
           <ListItemText primary={item.label} />
         </MenuItem>
       </Link>
     ))}
-  </>
+  </div>
 );
 
 export default Header;
