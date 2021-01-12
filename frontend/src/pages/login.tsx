@@ -1,9 +1,12 @@
+import './login.scss';
+
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Router from 'next/router';
 import { auth } from '../utils/Firebase';
 
 import GuestHeader from '../components/organisms/GuestHeader';
+import { TextField } from '@material-ui/core';
 
 const LoginPage: React.FunctionComponent = () => {
   const [email, setEmail] = useState<string>('');
@@ -28,7 +31,29 @@ const LoginPage: React.FunctionComponent = () => {
   return (
     <>
       <GuestHeader />
-      <div className="wrapper">
+      <div className="login">
+        <form
+          className="login__form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            alert('submit');
+          }}
+        >
+          <TextField
+            id="standard-basic"
+            label="メールアドレス"
+            type="email"
+            className="login__form__input"
+          />
+
+          <TextField
+            id="standard-basic"
+            label="パスワード"
+            type="password"
+            className="login__form__input"
+          />
+        </form>
+
         <form className="auth" onSubmit={login}>
           <div>
             <label htmlFor="email" className="auth-label">
