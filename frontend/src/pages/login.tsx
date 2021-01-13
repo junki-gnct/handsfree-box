@@ -6,11 +6,13 @@ import Router from 'next/router';
 import { auth } from '../utils/Firebase';
 
 import GuestHeader from '../components/organisms/GuestHeader';
-import { TextField } from '@material-ui/core';
+import { TextField, Button } from '@material-ui/core';
 
 const LoginPage: React.FunctionComponent = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [disabled, setDisabled] = useState<boolean>(false);
+  const [message, setMessage] = useState<JSX.Element>(<></>);
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
@@ -20,30 +22,34 @@ const LoginPage: React.FunctionComponent = () => {
 
   const login = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
+    setDisabled(true);
     try {
       await auth.signInWithEmailAndPassword(email, password);
       Router.push('/');
     } catch (err) {
-      alert(err.message);
+      setMessage(
+        <>
+          {'エラーが発生しました。'}
+          <br />
+          {err.message}
+        </>,
+      );
     }
+    setDisabled(false);
   };
 
   return (
     <>
       <GuestHeader />
       <div className="login">
-        <form
-          className="login__form"
-          onSubmit={(e) => {
-            e.preventDefault();
-            alert('submit');
-          }}
-        >
+        <h1 className="login__title">ログイン</h1>
+        <form className="login__form" onSubmit={login}>
           <TextField
             id="standard-basic"
             label="メールアドレス"
             type="email"
             className="login__form__input"
+            onChange={(e) => setEmail(e.target.value)}
           />
 
           <TextField
@@ -51,39 +57,33 @@ const LoginPage: React.FunctionComponent = () => {
             label="パスワード"
             type="password"
             className="login__form__input"
+            onChange={(e) => setPassword(e.target.value)}
           />
-        </form>
 
-        <form className="auth" onSubmit={login}>
-          <div>
-            <label htmlFor="email" className="auth-label">
-              Email:{' '}
-            </label>
-            <input
-              id="email"
-              className="auth-input"
-              type="email"
-              onChange={(e) => setEmail(e.target.value)}
-            />
+          <p className="login__form__error">{message}</p>
+
+          <div className="login__form__buttons">
+            <Button
+              variant="contained"
+              color="primary"
+              type="submit"
+              disabled={disabled}
+            >
+              ログイン
+            </Button>
+
+            <Link href="/signup">
+              <Button
+                variant="contained"
+                color="default"
+                type="button"
+                disabled={disabled}
+              >
+                新規登録
+              </Button>
+            </Link>
           </div>
-          <div className="mt-2">
-            <label htmlFor="password" className="auth-label">
-              Password:{' '}
-            </label>
-            <input
-              id="password"
-              className="auth-input"
-              type="password"
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <button className="auth-btn" type="submit">
-            Login
-          </button>
         </form>
-        <Link href="/signup">
-          <a className="auth-link">signup</a>
-        </Link>
       </div>
     </>
   );
