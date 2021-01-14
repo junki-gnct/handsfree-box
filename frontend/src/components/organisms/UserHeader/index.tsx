@@ -29,7 +29,7 @@ const UserHeader: React.FunctionComponent = () => {
   const logout = async (): Promise<void> => {
     setOpen(false);
     await auth.signOut();
-    Router.push('/');
+    Router.push('/login');
   };
 
   const userLinks: HeaderLink[] = [
