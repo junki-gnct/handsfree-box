@@ -2,18 +2,21 @@
 
 import 'firebase/auth';
 import 'firebase/firestore';
+import 'firebase/database';
 
 import firebase from 'firebase/app';
 
 const config = {
   apiKey: process.env.FIREBASE_KEY,
   authDomain: process.env.FIREBASE_DOMAIN,
-  databeseURL: process.env.FIREBASE_DATABASE,
+  databaseURL: process.env.FIREBASE_DATABASE,
   projectId: process.env.FIREBASE_PROJECT_ID,
   storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.FIREBASE_SENDER_ID,
   appId: process.env.FIREBASE_APPID,
 };
+
+console.log(config.databaseURL);
 
 // initializeを複数回走らせない
 if (firebase.apps.length === 0) {
@@ -21,4 +24,5 @@ if (firebase.apps.length === 0) {
 }
 
 const auth = firebase.auth();
-export { auth };
+const database = firebase.database();
+export { auth, database };
