@@ -9,8 +9,27 @@ import {
   Typography,
   Divider,
   Badge,
+  Dialog,
+  DialogTitle,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemAvatar,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  Avatar,
+  TextField,
 } from '@material-ui/core';
-import { PriorityHigh, Check, Refresh } from '@material-ui/icons';
+import {
+  PriorityHigh,
+  Check,
+  Refresh,
+  LockOpen,
+  Lock,
+  Create,
+  Cancel,
+} from '@material-ui/icons';
 
 import { database } from '../../../utils/Firebase';
 
@@ -27,17 +46,29 @@ const DeviceList: React.FunctionComponent<DeviceListProps> = ({
   );
   const [isFirstRun, setFirstRun] = useState<boolean>(true);
   const [currentTask] = useState<(NodeJS.Timeout | null)[]>([]);
+  const [open, setOpen] = useState<boolean>(false);
+  const [open2, setOpen2] = useState<boolean>(false);
+  const [open3, setOpen3] = useState<boolean>(false);
+  const [newName, setNewName] = useState<string>('');
+  const [device, setDevice] = useState<Device>({
+    id: '',
+    name: '',
+    isOnline: false,
+    isOpen: false,
+  });
 
   useEffect(() => {
     if (user && isFirstRun && devices.length != 0) {
-      console.log('created');
       refreshDevices();
       setFirstRun(false);
     } else if (!isFirstRun) {
-      console.log('updated');
       updateDevice();
     }
   }, [user, devices]);
+
+  const handleClose = (): void => {
+    setOpen(false);
+  };
 
   const updateDevice = (): void => {
     const list: DeviceConnectingStatus = { ...connectingList };
@@ -73,11 +104,139 @@ const DeviceList: React.FunctionComponent<DeviceListProps> = ({
   };
 
   const handleClicked = (device: Device): void => {
-    alert(device.id);
+    setDevice(device);
+    setOpen(true);
+  };
+
+  const handleListItemClick = (value: number): void => {
+    if (value == 1 && device.isOnline) {
+      setOpen2(true);
+    } else if (value == 2) {
+      setOpen3(true);
+    }
+    handleClose();
+  };
+
+  const handleClose2 = (value: number): void => {
+    if (user && value == 0) {
+      database.ref('/' + user.uid + '/' + device.id).update({
+        isOpen: !device.isOpen,
+      });
+    }
+    setOpen2(false);
+  };
+
+  const handleClose3 = (value?: string): void => {
+    if (user && value) {
+      database.ref('/' + user.uid + '/' + device.id).update({
+        name: value,
+      });
+    }
+    setOpen3(false);
   };
 
   return (
     <>
+      <Dialog
+        onClose={handleClose}
+        aria-labelledby="simple-dialog-title"
+        open={open}
+      >
+        <DialogTitle id="simple-dialog-title">
+          {device.name} に対する操作を選択
+        </DialogTitle>
+        <List>
+          <ListItem
+            button
+            onClick={() => handleListItemClick(1)}
+            disabled={!device.isOnline}
+          >
+            <ListItemAvatar>
+              <Avatar className="dialog__avatar">
+                {device.isOpen ? <Lock /> : <LockOpen />}
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText
+              primary={'鍵を' + (device.isOpen ? '閉める' : '開ける')}
+              secondary={
+                device.isOnline ? undefined : 'オフラインのため操作できません。'
+              }
+            />
+          </ListItem>
+          <ListItem button onClick={() => handleListItemClick(2)}>
+            <ListItemAvatar>
+              <Avatar className="dialog__avatar">
+                <Create />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary="名前の変更" />
+          </ListItem>
+          <ListItem button onClick={() => handleListItemClick(-1)}>
+            <ListItemAvatar>
+              <Avatar className="dialog__avatar">
+                <Cancel />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary="キャンセル" />
+          </ListItem>
+        </List>
+      </Dialog>
+
+      <Dialog
+        open={open2}
+        onClose={() => handleClose2(-1)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">確認</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            {device.name} の鍵を{device.isOpen ? '閉め' : '開け'}ますか？
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => handleClose2(1)} color="primary">
+            いいえ
+          </Button>
+          <Button onClick={() => handleClose2(0)} color="primary" autoFocus>
+            はい
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={open3}
+        onClose={() => handleClose3(undefined)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">名前の変更</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            <TextField
+              label="デバイス名"
+              defaultValue={device.name}
+              onChange={(e) => setNewName(e.target.value)}
+            />
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => handleClose3(undefined)} color="primary">
+            キャンセル
+          </Button>
+          <Button
+            onClick={() => handleClose3(newName)}
+            color="primary"
+            autoFocus
+          >
+            決定
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <div className="listtitle">
+        <span className="listtitle__span">デバイスリスト</span>
+      </div>
       <div className="listrefresh">
         <Button onClick={refreshDevices}>
           <Refresh className="listrefresh__icon" />
@@ -106,12 +265,12 @@ const DeviceList: React.FunctionComponent<DeviceListProps> = ({
                     ) : device.isOpen ? (
                       <>
                         <Check className="devicelist__device__pos__content__check" />
-                        <span>荷物なし</span>
+                        <span>荷物なし (未施錠)</span>
                       </>
                     ) : (
                       <>
                         <PriorityHigh className="devicelist__device__pos__content__attention" />
-                        <span>荷物あり</span>
+                        <span>荷物あり (施錠)</span>
                       </>
                     )}
                   </span>

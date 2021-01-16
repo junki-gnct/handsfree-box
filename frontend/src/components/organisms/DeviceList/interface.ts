@@ -10,5 +10,4 @@ export interface Device {
   isOnline: boolean;
   isOpen: boolean;
   name: string;
-  isConnecting?: boolean;
 }
