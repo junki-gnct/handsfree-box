@@ -5,13 +5,12 @@ import { auth, database } from '../utils/Firebase';
 import { User } from '@firebase/auth-types';
 
 import UserHeader from '../components/organisms/UserHeader';
+import DeviceList from '../components/organisms/DeviceList';
+import { Device } from '../components/organisms/DeviceList/interface';
 
 const IndexPage: React.FunctionComponent = () => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [
-    dataRef,
-    setDataRef,
-  ] = useState<firebase.default.database.Reference | null>(null);
+  const [devices, setDevices] = useState<Device[]>([]);
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
@@ -26,10 +25,19 @@ const IndexPage: React.FunctionComponent = () => {
   const initDatabase = (): void => {
     if (currentUser !== null) {
       const ref = database.ref(`/${currentUser.uid}`);
-      setDataRef(ref);
       ref.on('value', (snapshot) => {
-        const data = snapshot.val();
-        console.log(data);
+        const devicelist: Device[] = [];
+        Object.keys(snapshot.val()).forEach((key) => {
+          const data = snapshot.val()[key];
+          const device: Device = {
+            id: key,
+            isOnline: data.isOnline,
+            isOpen: data.isOpen,
+            name: data.name,
+          };
+          devicelist.push(device);
+        });
+        setDevices(devicelist);
       });
     }
   };
@@ -46,6 +54,7 @@ const IndexPage: React.FunctionComponent = () => {
   return (
     <div>
       <UserHeader />
+      <DeviceList user={currentUser ? currentUser : null} devices={devices} />
       <pre>{JSON.stringify(currentUser, null, 4)}</pre>
       <button onClick={logout}>Logout</button>
     </div>

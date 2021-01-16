@@ -1,0 +1,58 @@
+.listrefresh {
+    padding-top: 30px;
+    display: flex;
+    justify-content: center;
+
+    &__icon {
+        color: darkslateblue;
+    }
+
+    &__label {
+        margin-left: 5px;
+    }
+}
+
+.devicelist {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    &__device {
+        width: 100%;
+        min-width: 275px;
+        max-width: 300px;
+
+        margin: 20px;
+
+        &__area {
+            padding: 10px;
+            display: block;
+        }
+
+        &__status {
+            font-size: 20px;
+
+            &badge {
+                margin: 0px 10px;
+            }
+        }
+
+        &__pos {
+            margin-bottom: 12px;
+
+            &__content {
+                &__attention {
+                    color: red;
+                }
+
+                &__check {
+                    color: green;
+                }
+
+                display: flex;
+                justify-content: left;
+            }
+        }
+
+    }
+}
