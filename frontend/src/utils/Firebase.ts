@@ -9,7 +9,8 @@ import firebase from 'firebase/app';
 
 const config = {
   apiKey: process.env.FIREBASE_KEY,
-  appId: process.env.FIREBASE_APP_ID,
+  //appId: process.env.FIREBASE_APP_ID,
+  appId: '1:441504308723:web:f18579e0d49696071b0686', // TODO: replace this.
   authDomain: process.env.FIREBASE_DOMAIN,
   databaseURL: process.env.FIREBASE_DATABASE,
   projectId: process.env.FIREBASE_PROJECT_ID,
@@ -28,7 +29,8 @@ const firebaseCloudMessaging = {
     return localforage.getItem('fcm_token');
   },
   init: async function (): Promise<string | null | undefined> {
-    if (!firebase.apps.length) {
+    if (firebase.apps.length === 0) {
+      console.log(config);
       firebase.initializeApp(config);
     }
 

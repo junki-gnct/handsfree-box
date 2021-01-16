@@ -29,7 +29,8 @@ const IndexPage: React.FunctionComponent = () => {
 
     const setToken = async (): Promise<void> => {
       try {
-        const token = firebaseCloudMessaging.init();
+        const token = await firebaseCloudMessaging.init();
+        console.log('setToken', token);
         if (token) {
           getMessage();
         }
