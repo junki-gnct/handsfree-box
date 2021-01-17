@@ -15,13 +15,14 @@ import { firebaseCloudMessaging } from '../utils/Firebase';
 
 const IndexPage: React.FunctionComponent = () => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [currentToken, setCurrentToken] = useState<string | null>(null);
   const [devices, setDevices] = useState<Device[]>([]);
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
       if (user) {
         setCurrentUser(user);
-        setToken();
+        setToken(user);
       } else {
         Router.push('/login');
       }
@@ -33,12 +34,11 @@ const IndexPage: React.FunctionComponent = () => {
         database.ref(`/${currentUser.uid}`).update({ token: token });
     };
 
-    const setToken = async (): Promise<void> => {
+    const setToken = async (user: User): Promise<void> => {
       try {
         const token = await firebaseCloudMessaging.init(tokenHandler);
-        console.log(token);
-        if (currentUser && token)
-          database.ref(`/${currentUser.uid}`).update({ token: token });
+        if (user && token)
+          database.ref(`/${user.uid}`).update({ token: token });
         if (token) {
           getMessage();
         }
