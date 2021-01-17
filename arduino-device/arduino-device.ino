@@ -100,7 +100,6 @@ void loop() {
         // Keep-alive (Receive)
         count = 0;
         ka_count = 0;
-        in_str = "";
       } else if(in_str == "LOCK" && state != 0) {
         isLocked = true;
         mode0_state = 0;
@@ -124,7 +123,10 @@ void loop() {
   // Keep-alive (Check)
   if(ka_count >= 5) {
     if (lcd != 1) printShortLongText("Offline", "Check your connection");
+    mode0_state = 0;
+    mode0_cur = 0;
     lcd = 1;
+    delay(10);
     return;
   } else if(state == 0) {
     if (lcd != 2) printShortLongText("Disabled", "Check switch state");
@@ -132,7 +134,7 @@ void loop() {
   } else if(mode == 1 || mode == 2) {
     // do nothing.
   } else if (isLocked) {
-    if (lcd != 3) printShortLongText("Locked", "User website to unlock");
+    if (lcd != 3) printShortLongText("Locked", "Use website to unlock");
     lcd = 3;
   } else if (!isLocked) {
     if (lcd != 4) printShortLongText("Unlocked", "       [Lock]     ");
@@ -142,10 +144,13 @@ void loop() {
   // Keep-alive (Count)
   if(count % 200 == 0) {
     count = 0;
-    // ka_count++;
+    ka_count++;
   }
 
-  if(state == 0) return;
+  if(state == 0) {
+    delay(10);
+    return;
+  }
 
   if(mode == 0) {
     // Normal mode.

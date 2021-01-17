@@ -1,6 +1,7 @@
 import * as firebase from 'firebase';
 import * as firebaseConfig from './miscs/firebaseConfig.json';
 import * as getmac from 'getmac';
+import SerialPort from 'serialport';
 
 import * as firebaseHandler from './firebaseHandler';
 
@@ -13,7 +14,38 @@ const device_id = getmac
 console.log(`Handsfree Box v${process.env.npm_package_version as string}`);
 console.log('[Serial] Opening port...');
 
-// TODO: Open serial connection.
+let onlineState = true;
+let dbref: firebase.database.Reference | null = null;
+
+const comport = 'COM4';
+
+const port = new SerialPort(comport, {
+  baudRate: 19200,
+});
+const parser = port.pipe(new SerialPort.parsers.Readline({delimiter: '\n'}));
+parser.on('data', data => {
+  const cmd = `${data as string}`;
+  if(!cmd.startsWith('RECV')) {
+    console.log('[Serial]', data);
+    if (cmd.startsWith('STATE_0') || cmd.startsWith('STATE_1')) {
+      onlineState = cmd.startsWith('STATE_1');
+      if (dbref) {
+        void dbref.update({ isOnline: onlineState });
+      }
+    } else if(cmd.startsWith('LOCKME')) {
+      const timer = setInterval(() => {
+        if(dbref) {
+          void dbref.update({ isOpen: false });
+          clearInterval(timer);
+        }
+      }, 500);
+    }
+  }
+});
+
+setInterval(() => {
+  port.write('KeepAlive\n');
+}, 1000);
 
 console.log('[Serial] Port opened.');
 
@@ -29,7 +61,7 @@ let gcm_token: string | null = null;
 
 // TODO: Check user credentials.
 
-void firebase.auth().signInWithEmailAndPassword('test@example.com', 'testtest');
+void firebase.auth().signInWithEmailAndPassword('test4@example.com', 'testtest');
 firebase.auth().onAuthStateChanged((currentUser) => {
   if (currentUser) {
     console.log(`[Device] ID: ${device_id}, Registered to ${currentUser.uid}`);
@@ -45,12 +77,13 @@ firebase.auth().onAuthStateChanged((currentUser) => {
     });
 
     const ref = db.ref(`/${currentUser.uid}/${device_id}/`);
+    dbref = ref;
 
     void ref.on('value', (snapshot) => {
       const obj = snapshot.val() as Record<string, unknown>;
       if (obj == null) {
         void ref.set({
-          isOpen: false,
+          isOpen: true,
           isOnline: true,
           name: 'デバイス',
         });
@@ -61,13 +94,14 @@ firebase.auth().onAuthStateChanged((currentUser) => {
           console.log('[Firebase] Connected.');
           isFirstRun = false;
           isOpen = obj.isOpen as boolean;
+          firebaseHandler.onBoxStateUpdated(state, gcm_token as string, port);
         }
 
-        firebaseHandler.checkOnlineState(obj, ref);
+        firebaseHandler.checkOnlineState(obj, ref, onlineState);
 
         if (state != isOpen) {
           isOpen = state;
-          firebaseHandler.onBoxStateUpdated(state, gcm_token as string);
+          firebaseHandler.onBoxStateUpdated(state, gcm_token as string, port);
         }
       }
     });
