@@ -20,7 +20,6 @@ const config = {
 
 // initializeを複数回走らせない
 if (firebase.apps.length === 0) {
-  console.log(config);
   firebase.initializeApp(config);
 }
 
@@ -28,9 +27,10 @@ const firebaseCloudMessaging = {
   tokenInlocalforage: async function (): Promise<string | null> {
     return localforage.getItem('fcm_token');
   },
-  init: async function (): Promise<string | null | undefined> {
+  init: async function (
+    tokenRefreshHandler: (token: string) => void,
+  ): Promise<string | null | undefined> {
     if (firebase.apps.length === 0) {
-      console.log(config);
       firebase.initializeApp(config);
     }
 
@@ -47,11 +47,16 @@ const firebaseCloudMessaging = {
           const fcm_token = await messaging.getToken();
           if (fcm_token) {
             localforage.setItem('fcm_token', fcm_token);
-            console.log('fcm token', fcm_token);
-
             return fcm_token;
           }
         }
+
+        messaging.onTokenRefresh(() => {
+          messaging.getToken().then((refreshedToken) => {
+            localforage.setItem('fcm_token', refreshedToken);
+            tokenRefreshHandler(refreshedToken);
+          });
+        });
       }
     } catch (error) {
       console.error(error);

@@ -27,10 +27,18 @@ const IndexPage: React.FunctionComponent = () => {
       }
     });
 
+    const tokenHandler = (token: string): void => {
+      console.log('fcm token', 'token refreshed.');
+      if (currentUser && token)
+        database.ref(`/${currentUser.uid}`).update({ token: token });
+    };
+
     const setToken = async (): Promise<void> => {
       try {
-        const token = await firebaseCloudMessaging.init();
-        console.log('setToken', token);
+        const token = await firebaseCloudMessaging.init(tokenHandler);
+        console.log(token);
+        if (currentUser && token)
+          database.ref(`/${currentUser.uid}`).update({ token: token });
         if (token) {
           getMessage();
         }
@@ -40,19 +48,6 @@ const IndexPage: React.FunctionComponent = () => {
     };
 
     const getMessage = (): void => {
-      const config = {
-        apiKey: process.env.FIREBASE_KEY,
-        authDomain: process.env.FIREBASE_DOMAIN,
-        databaseURL: process.env.FIREBASE_DATABASE,
-        projectId: process.env.FIREBASE_PROJECT_ID,
-        storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-        messagingSenderId: process.env.FIREBASE_SENDER_ID,
-        appId: process.env.FIREBASE_APP_ID,
-      };
-
-      if (!firebase.app.length) {
-        firebase.initializeApp(config);
-      }
       const messaging = firebase.messaging();
       messaging.onMessage((message) => console.log('foreground ', message));
     };
@@ -69,13 +64,15 @@ const IndexPage: React.FunctionComponent = () => {
         const devicelist: Device[] = [];
         Object.keys(snapshot.val()).forEach((key) => {
           const data = snapshot.val()[key];
-          const device: Device = {
-            id: key,
-            isOnline: data.isOnline,
-            isOpen: data.isOpen,
-            name: data.name,
-          };
-          devicelist.push(device);
+          if (data.name && key != 'token') {
+            const device: Device = {
+              id: key,
+              isOnline: data.isOnline,
+              isOpen: data.isOpen,
+              name: data.name,
+            };
+            devicelist.push(device);
+          }
         });
         setDevices(devicelist);
       });
