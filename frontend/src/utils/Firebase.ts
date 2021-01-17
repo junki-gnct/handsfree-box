@@ -43,7 +43,7 @@ const firebaseCloudMessaging = {
         console.log(config);
         console.log('[VAPID Key]: ' + config.vapidKey);
         if (tokenInLocalForage !== null) {
-          return tokenInLocalForage;
+          //          return tokenInLocalForage;
         }
 
         const status = await Notification.requestPermission();
