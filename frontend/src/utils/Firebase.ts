@@ -16,6 +16,8 @@ const config = {
   projectId: process.env.FIREBASE_PROJECT_ID,
   storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.FIREBASE_SENDER_ID,
+  vapidKey:
+    'BMH9LyfveMmuiyBYdC3H8JLo39uwQuYGyh8l1gQFcnmvqnIiGaTWSJymNbquBjhQCNVJA3P8a-M_CkarfOvl34A',
 };
 
 // initializeを複数回走らせない
@@ -38,13 +40,18 @@ const firebaseCloudMessaging = {
       if (self) {
         const messaging = firebase.messaging();
         const tokenInLocalForage = await this.tokenInlocalforage();
+        console.log(config);
+        console.log('[VAPID Key]: ' + config.vapidKey);
         if (tokenInLocalForage !== null) {
           return tokenInLocalForage;
         }
 
         const status = await Notification.requestPermission();
         if (status && status === 'granted') {
-          const fcm_token = await messaging.getToken();
+          console.log('[VAPID Key]: ' + config.vapidKey);
+          const fcm_token = await messaging.getToken({
+            vapidKey: config.vapidKey,
+          });
           if (fcm_token) {
             localforage.setItem('fcm_token', fcm_token);
             return fcm_token;
@@ -52,10 +59,14 @@ const firebaseCloudMessaging = {
         }
 
         messaging.onTokenRefresh(() => {
-          messaging.getToken().then((refreshedToken) => {
-            localforage.setItem('fcm_token', refreshedToken);
-            tokenRefreshHandler(refreshedToken);
-          });
+          messaging
+            .getToken({
+              vapidKey: config.vapidKey,
+            })
+            .then((refreshedToken) => {
+              localforage.setItem('fcm_token', refreshedToken);
+              tokenRefreshHandler(refreshedToken);
+            });
         });
       }
     } catch (error) {

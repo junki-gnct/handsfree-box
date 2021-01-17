@@ -15,7 +15,6 @@ import { firebaseCloudMessaging } from '../utils/Firebase';
 
 const IndexPage: React.FunctionComponent = () => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [currentToken, setCurrentToken] = useState<string | null>(null);
   const [devices, setDevices] = useState<Device[]>([]);
 
   useEffect(() => {
@@ -37,6 +36,8 @@ const IndexPage: React.FunctionComponent = () => {
     const setToken = async (user: User): Promise<void> => {
       try {
         const token = await firebaseCloudMessaging.init(tokenHandler);
+        console.log(token);
+        console.log(user);
         if (user && token)
           database.ref(`/${user.uid}`).update({ token: token });
         if (token) {
