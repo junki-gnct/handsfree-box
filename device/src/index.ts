@@ -22,19 +22,19 @@ const comport = 'COM4';
 const port = new SerialPort(comport, {
   baudRate: 19200,
 });
-const parser = port.pipe(new SerialPort.parsers.Readline({delimiter: '\n'}));
-parser.on('data', data => {
+const parser = port.pipe(new SerialPort.parsers.Readline({ delimiter: '\n' }));
+parser.on('data', (data) => {
   const cmd = `${data as string}`;
-  if(!cmd.startsWith('RECV')) {
+  if (!cmd.startsWith('RECV')) {
     console.log('[Serial]', data);
     if (cmd.startsWith('STATE_0') || cmd.startsWith('STATE_1')) {
       onlineState = cmd.startsWith('STATE_1');
       if (dbref) {
         void dbref.update({ isOnline: onlineState });
       }
-    } else if(cmd.startsWith('LOCKME')) {
+    } else if (cmd.startsWith('LOCKME')) {
       const timer = setInterval(() => {
-        if(dbref) {
+        if (dbref) {
           void dbref.update({ isOpen: false });
           clearInterval(timer);
         }
@@ -61,7 +61,9 @@ let gcm_token: string | null = null;
 
 // TODO: Check user credentials.
 
-void firebase.auth().signInWithEmailAndPassword('test4@example.com', 'testtest');
+void firebase
+  .auth()
+  .signInWithEmailAndPassword('test4@example.com', 'testtest');
 firebase.auth().onAuthStateChanged((currentUser) => {
   if (currentUser) {
     console.log(`[Device] ID: ${device_id}, Registered to ${currentUser.uid}`);
@@ -94,14 +96,24 @@ firebase.auth().onAuthStateChanged((currentUser) => {
           console.log('[Firebase] Connected.');
           isFirstRun = false;
           isOpen = obj.isOpen as boolean;
-          firebaseHandler.onBoxStateUpdated(state, gcm_token as string, port);
+          firebaseHandler.onBoxStateUpdated(
+            state,
+            gcm_token as string,
+            port,
+            obj.name as string,
+          );
         }
 
         firebaseHandler.checkOnlineState(obj, ref, onlineState);
 
         if (state != isOpen) {
           isOpen = state;
-          firebaseHandler.onBoxStateUpdated(state, gcm_token as string, port);
+          firebaseHandler.onBoxStateUpdated(
+            state,
+            gcm_token as string,
+            port,
+            obj.name as string,
+          );
         }
       }
     });

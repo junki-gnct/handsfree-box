@@ -3,6 +3,7 @@ declare module '*/firebaseConfig.json' {
     api_key: string;
     auth_domain: string;
     databaseURL: string;
+    serverkey: string;
   }
 
   const value: FirebaseConfig;
