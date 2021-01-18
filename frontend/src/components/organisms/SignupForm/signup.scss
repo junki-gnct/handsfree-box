@@ -1,0 +1,31 @@
+.signup {
+    width: 100vw;
+    text-align: center;
+
+    &__title {
+        padding: 20px 0px;
+    }
+    
+    &__form {
+        display: inline-block;
+        text-align: left;
+        width: 80%;
+        max-width: 300px;
+
+        &__input {
+            width: 100%;
+            margin: 15px 0px!important;
+        }
+
+        &__buttons {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 20px;
+        }
+
+        &__error {
+            text-align: center;
+            color: red;
+        }
+    }
+}

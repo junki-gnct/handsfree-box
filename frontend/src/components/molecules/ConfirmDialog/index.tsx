@@ -40,7 +40,7 @@ const ConfirmDialog: React.FunctionComponent<ConfirmDialogProps> = (
         <Button onClick={props.cancel_handler} color="primary">
           {props.cancel_text}
         </Button>
-        <Button onClick={props.positive_handler} color="primary" autoFocus>
+        <Button onClick={props.positive_handler} color="primary">
           {props.positive_text}
         </Button>
       </DialogActions>
