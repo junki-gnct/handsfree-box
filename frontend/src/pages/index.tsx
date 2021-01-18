@@ -8,6 +8,8 @@ import UserHeader from '../components/organisms/UserHeader';
 import DeviceList from '../components/organisms/DeviceList';
 import { Device } from '../components/organisms/DeviceList/interface';
 
+import dynamic from 'next/dynamic';
+
 const IndexPage: React.FunctionComponent = () => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [devices, setDevices] = useState<Device[]>([]);
@@ -48,8 +50,16 @@ const IndexPage: React.FunctionComponent = () => {
     }
   };
 
+  const PushNotificationHandler = dynamic(
+    () => import('../components/organisms/PushNotificationHandler'),
+    {
+      ssr: false,
+    },
+  );
+
   return (
     <div>
+      <PushNotificationHandler />
       <UserHeader />
       <DeviceList user={currentUser ? currentUser : null} devices={devices} />
     </div>
