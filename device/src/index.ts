@@ -14,10 +14,11 @@ const device_id = getmac
 console.log(`Handsfree Box v${process.env.npm_package_version as string}`);
 console.log('[Serial] Opening port...');
 
+const isWin = process.platform === 'win32';
 let onlineState = true;
 let dbref: firebase.database.Reference | null = null;
 
-const comport = 'COM4';
+const comport = isWin ? 'COM4' : '/dev/ttyS0';
 
 const port = new SerialPort(comport, {
   baudRate: 19200,
