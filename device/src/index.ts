@@ -1,7 +1,7 @@
 import * as firebase from 'firebase';
 import * as firebaseConfig from './miscs/firebaseConfig.json';
 import * as getmac from 'getmac';
-import SerialPort from 'serialport';
+import SerialPort = require('serialport');
 
 import * as firebaseHandler from './firebaseHandler';
 

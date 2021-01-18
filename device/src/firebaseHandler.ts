@@ -1,6 +1,6 @@
-import SerialPort from 'serialport';
+import SerialPort = require('serialport');
 import * as firebaseConfig from './miscs/firebaseConfig.json';
-import fetch from 'isomorphic-fetch';
+import fetch = require('isomorphic-fetch');
 
 export function checkOnlineState(
   obj: Record<string, unknown>,
