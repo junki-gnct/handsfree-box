@@ -65,6 +65,10 @@ const config = {
 };
 firebase.initializeApp(config);
 
+const toTwoDigit = (value: string | number): string => {
+  return `0${value}`.slice(-2);
+};
+
 let gcm_token: string | null = null;
 
 void firebase
@@ -135,7 +139,9 @@ firebase.auth().onAuthStateChanged((currentUser) => {
             action: state ? 'open' : 'close',
             date: `${date.getFullYear()}/${
               date.getMonth() + 1
-            }/${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`,
+            }/${date.getDate()} ${toTwoDigit(date.getHours())}:${toTwoDigit(
+              date.getMinutes(),
+            )}:${toTwoDigit(date.getSeconds())}`,
           });
           void ref2.set(JSON.stringify(logs));
         }

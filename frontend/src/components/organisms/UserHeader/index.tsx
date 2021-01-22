@@ -7,7 +7,7 @@ import { HeaderLink } from '../../molecules/Header/interface';
 
 import ConfirmDialog from '../../molecules/ConfirmDialog';
 
-import { Home } from '@material-ui/icons';
+import { Home, ListAlt } from '@material-ui/icons';
 import Header, { ParseLinks } from '../../molecules/Header';
 import {
   Divider,
@@ -37,6 +37,11 @@ const UserHeader: React.FunctionComponent = () => {
       label: 'ホーム',
       link: '/',
       icon: <Home />,
+    },
+    {
+      label: 'ログ',
+      link: '/log',
+      icon: <ListAlt />,
     },
   ];
 
