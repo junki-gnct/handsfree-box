@@ -19,6 +19,8 @@ const PushNotificationHandler: React.FunctionComponent = () => {
     firebase.initializeApp(config);
   }
 
+  if (!firebase.messaging.isSupported()) return <></>;
+
   const vapid =
     'BMH9LyfveMmuiyBYdC3H8JLo39uwQuYGyh8l1gQFcnmvqnIiGaTWSJymNbquBjhQCNVJA3P8a-M_CkarfOvl34A';
 
