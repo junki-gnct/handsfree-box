@@ -104,14 +104,14 @@ void loop() {
         isLocked = true;
         mode0_state = 0;
         mode0_cur = 0;
-        myServo.write(1);
+        myServo.write(179);
       
         Serial.println("LOCK_" + (isLocked ? 1 : 0));
       } else if(in_str == "UNLOCK" && state != 0) {
         isLocked = false;
         mode0_state = 0;
         mode0_cur = 0;
-        myServo.write(179);
+        myServo.write(1);
         
         Serial.println("LOCK_" + (isLocked ? 1 : 0));
       }
