@@ -5,6 +5,12 @@ import SerialPort = require('serialport');
 
 import * as firebaseHandler from './firebaseHandler';
 
+export interface LogData {
+  id: string;
+  action: 'open' | 'close';
+  date: string;
+}
+
 const device_id = getmac
   .default()
   .toUpperCase()
@@ -14,6 +20,7 @@ const device_id = getmac
 console.log(`Handsfree Box v${process.env.npm_package_version as string}`);
 console.log('[Serial] Opening port...');
 
+let logs: LogData[] | null = null;
 const isWin = process.platform === 'win32';
 let onlineState = true;
 let dbref: firebase.database.Reference | null = null;
@@ -60,11 +67,12 @@ firebase.initializeApp(config);
 
 let gcm_token: string | null = null;
 
-// TODO: Check user credentials.
-
 void firebase
   .auth()
-  .signInWithEmailAndPassword('test4@example.com', 'testtest');
+  .signInWithEmailAndPassword(
+    process.env.HB_USER_ID as string,
+    process.env.HB_USER_PASS as string,
+  );
 firebase.auth().onAuthStateChanged((currentUser) => {
   if (currentUser) {
     console.log(`[Device] ID: ${device_id}, Registered to ${currentUser.uid}`);
@@ -80,6 +88,10 @@ firebase.auth().onAuthStateChanged((currentUser) => {
     });
 
     const ref = db.ref(`/${currentUser.uid}/${device_id}/`);
+    const ref2 = db.ref(`/${currentUser.uid}/logs`);
+    void ref2.on('value', (snapshot) => {
+      logs = JSON.parse(snapshot.val() as string) as LogData[];
+    });
     dbref = ref;
 
     void ref.on('value', (snapshot) => {
@@ -115,6 +127,17 @@ firebase.auth().onAuthStateChanged((currentUser) => {
             port,
             obj.name as string,
           );
+          if (logs == null) logs = [];
+          const date = new Date();
+
+          logs?.push({
+            id: device_id,
+            action: state ? 'open' : 'close',
+            date: `${date.getFullYear()}/${
+              date.getMonth() + 1
+            }/${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`,
+          });
+          void ref2.set(JSON.stringify(logs));
         }
       }
     });
