@@ -16,10 +16,26 @@ const IndexTemplate: React.FunctionComponent<{
     initDatabase();
   }, [currentUser]);
 
+  const devices_equal = (a: Device[], b: Device[]): boolean => {
+    if (!Array.isArray(a)) return false;
+    if (!Array.isArray(b)) return false;
+    if (a.length != b.length) return false;
+    for (let i = 0, n = a.length; i < n; ++i) {
+      if (
+        a[i].id !== b[i].id ||
+        a[i].name !== b[i].name ||
+        a[i].isOpen !== b[i].isOpen ||
+        a[i].isOnline !== b[i].isOnline
+      )
+        return false;
+    }
+    return true;
+  };
+
   const initDatabase = (): void => {
     if (currentUser !== null) {
       const ref = database.ref(`/${currentUser.uid}`);
-      ref.on('value', (snapshot) => {
+      ref.on('value', async (snapshot) => {
         const devicelist: Device[] = [];
         Object.keys(snapshot.val()).forEach((key) => {
           const data = snapshot.val()[key];
@@ -33,7 +49,14 @@ const IndexTemplate: React.FunctionComponent<{
             devicelist.push(device);
           }
         });
-        setDevices(devicelist);
+        let nowState: Device[] = [];
+        setDevices((state) => {
+          nowState = state;
+          return state;
+        });
+        if (!devices_equal(nowState, devicelist)) {
+          setDevices(devicelist);
+        }
       });
     }
   };
